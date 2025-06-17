@@ -1,0 +1,21 @@
+[project]
+name = "csv-database"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "Egor Pavlovich", email = "pavlovich.er@phystech.edu"},
+]
+dependencies = []
+requires-python = "==3.13.*"
+readme = "README.md"
+license = {text = "MIT"}
+
+
+[tool.pdm]
+distribution = false
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.0",
+    "pytest-cov>=6.2.1",
+]
