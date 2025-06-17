@@ -1,9 +1,8 @@
 from collections.abc import Sequence
 from contextlib import nullcontext as does_not_raise
 import pytest
-from typing import Any
 
-from src.aggregator import is_digital_column, raise_if_incorrect_aggregation
+from src.commands.aggregator import Aggregator, is_digital_column
 
 @pytest.mark.parametrize(("values", "res", "expectation"),
     [
@@ -17,15 +16,15 @@ def test_is_digital_column(values: Sequence, res, expectation):
     with expectation:
         assert is_digital_column(values) == res
 
-@pytest.mark.parametrize(("param", "expectation"),
+@pytest.mark.parametrize(("command", "expectation"),
     [
-        ("avg", does_not_raise()),
-        ("min", does_not_raise()),
-        ("max", does_not_raise()),
-        ("desc", pytest.raises(ValueError)),
-        (1, pytest.raises(ValueError)),
+        ("rating=avg", does_not_raise()),
+        ("rating=min", does_not_raise()),
+        ("rating=max", does_not_raise()),
+        ("rating=supermax", pytest.raises(ValueError)),
+        ("rating>max", pytest.raises(ValueError)),
     ]
 )
-def test_raise_if_incorrect_aggregation(param: Any, expectation):
+def test_validate(command: str, expectation):
     with expectation:
-        raise_if_incorrect_aggregation(param)
+        print(*Aggregator(command).validate())
