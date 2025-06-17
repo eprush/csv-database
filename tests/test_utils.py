@@ -1,7 +1,7 @@
 from collections.abc import Iterable
 import pytest
 
-from src.utils import does_exist_column, file_does_exist_and_has_csv
+from src.utils import does_column_exist, has_csv_extension
 
 class CustomReader:
     def __init__(self):
@@ -22,14 +22,15 @@ def reader() -> Iterable:
     ]
 )
 def test_does_exist_column(reader, column, res):
-    assert does_exist_column(reader, column) == res
+    assert does_column_exist(reader, column) == res
 
 @pytest.mark.parametrize(("filename", "res"),
     [
         ("test_data.csv", True),
         ("test_data.txt", False),
-        ("bullshit_for_test.py", False),
+        ("test.py", False),
+        ("t.c", False),
     ]
 )
-def test_file_does_exist_and_has_csv(filename, res):
-    assert file_does_exist_and_has_csv("tests/data/" + filename) == res
+def test_has_csv_extension(filename, res):
+    assert has_csv_extension("tests/data/" + filename) == res
