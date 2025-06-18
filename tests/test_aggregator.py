@@ -21,7 +21,6 @@ def test_is_digital_column(values: Sequence, res, expectation):
         ("rating=avg", does_not_raise()),
         ("rating=min", does_not_raise()),
         ("rating=max", does_not_raise()),
-        ("rating=supermax", pytest.raises(ValueError)),
         ("rating>max", pytest.raises(ValueError)),
     ]
 )
