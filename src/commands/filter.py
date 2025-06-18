@@ -1,10 +1,11 @@
-from typing import Iterable
+from src.commands.abstract_command import AbstractCommandMaker, ProcessedData
 
-from src.commands.abstract_command import AbstractCommandMaker
 
 class Filter(AbstractCommandMaker):
-    def validate(self) -> tuple[str, str]:
+    name: str | None = ("filtration"
+                        "")
+    def validate(self) -> tuple[str, str, str]:
         ...
 
-    def make(self, previous_data: Iterable) -> Iterable:
+    def make(self, previous_data: ProcessedData, *, column: str, sign:str, param: str) -> ProcessedData:
         ...
