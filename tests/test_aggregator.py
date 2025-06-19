@@ -1,20 +1,23 @@
-from collections.abc import Sequence
 from contextlib import nullcontext as does_not_raise
 import pytest
 
-from src.commands.aggregator import Aggregator, is_digital_column
+from src.command_handlers.aggregator import Aggregator
 
-@pytest.mark.parametrize(("values", "res", "expectation"),
-    [
-        ([1,2,3], True, does_not_raise()),
-        ([-1,0,1,-1.1], True, does_not_raise()),
-        ([0, "1", 3], False, does_not_raise()),
-        ([], False, pytest.raises(ValueError)),
-    ]
-)
-def test_is_digital_column(values: Sequence, res, expectation):
-    with expectation:
-        assert is_digital_column(values) == res
+
+@pytest.fixture(scope="session")
+def data():
+    return {"rating": ["0.000", "-0.4", "1.0", "2", "2.1", "2.11", "-0.09"]}
+
+
+@pytest.fixture(scope="session")
+def column():
+    return "rating"
+
+
+@pytest.fixture(scope="session")
+def sign():
+    return "="
+
 
 @pytest.mark.parametrize(("command", "expectation"),
     [
@@ -24,6 +27,21 @@ def test_is_digital_column(values: Sequence, res, expectation):
         ("rating>max", pytest.raises(ValueError)),
     ]
 )
-def test_validate(command: str, expectation):
+def test_parse_command(command: str, expectation):
     with expectation:
-        print(*Aggregator(command).validate())
+        print(*Aggregator(command).parse_command())
+
+
+@pytest.mark.parametrize(("command", "res", "expectation"),
+    [
+        ("rating=avg", {"rating": [0.96]}, does_not_raise()),
+        ("rating=min", {"rating": [-0.4]}, does_not_raise()),
+        ("rating=max", {"rating": [2.11]}, does_not_raise()),
+        ("rating=supermax", ..., pytest.raises(ValueError)),
+    ]
+)
+def test_process(data, column, sign, command, res, expectation):
+    agg = Aggregator(command)
+    *_, param = agg.parse_command()
+    with expectation:
+        assert agg.process(data, column=column, sign=sign, param=param) == res
