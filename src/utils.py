@@ -34,7 +34,7 @@ def is_digital_column(column: Iterable | Sized) -> bool:
 
     for value in column:
         try:
-            float(value)
+            _ = float(value)
         except ValueError:
             return False
     return True
