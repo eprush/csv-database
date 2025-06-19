@@ -2,34 +2,23 @@ from contextlib import nullcontext as does_not_raise
 import pytest
 
 from src.command_handlers.aggregator import Aggregator
+from tests.fixtures import data
 
 
-@pytest.fixture(scope="session")
-def data():
-    return {"rating": ["0.000", "-0.4", "1.0", "2", "2.1", "2.11", "-0.09"]}
-
-
-@pytest.fixture(scope="session")
-def column():
-    return "rating"
-
-
-@pytest.fixture(scope="session")
-def sign():
-    return "="
-
-
-@pytest.mark.parametrize(("command", "expectation"),
+@pytest.mark.parametrize(("command", "res","expectation"),
     [
-        ("rating=avg", does_not_raise()),
-        ("rating=min", does_not_raise()),
-        ("rating=max", does_not_raise()),
-        ("rating>max", pytest.raises(ValueError)),
+        ("rating=avg", ("rating", "=", "avg"), does_not_raise()),
+        ("rating=min", ("rating", "=", "min"), does_not_raise()),
+        ("rating=max", ("rating", "=", "max"), does_not_raise()),
+        ("rating=supermax", ("rating", "=", "supermax"), does_not_raise()),
+        ("brand=avg", ("brand", "=", "avg"), does_not_raise()),
+        ("rating>max", ..., pytest.raises(ValueError)),
     ]
 )
-def test_parse_command(command: str, expectation):
+def test_parse_command(command: str, res, expectation):
     with expectation:
-        print(*Aggregator(command).parse_command())
+        parsed = Aggregator(command).parse_command()
+        assert parsed == res
 
 
 @pytest.mark.parametrize(("command", "res", "expectation"),
@@ -38,10 +27,11 @@ def test_parse_command(command: str, expectation):
         ("rating=min", {"rating": [-0.4]}, does_not_raise()),
         ("rating=max", {"rating": [2.11]}, does_not_raise()),
         ("rating=supermax", ..., pytest.raises(ValueError)),
+        ("brand=avg", ..., pytest.raises(TypeError)),
     ]
 )
-def test_process(data, column, sign, command, res, expectation):
+def test_process(data, command, res, expectation):
     agg = Aggregator(command)
-    *_, param = agg.parse_command()
+    column, sign, param = agg.parse_command()
     with expectation:
         assert agg.process(data, column=column, sign=sign, param=param) == res
