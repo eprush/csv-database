@@ -1,33 +1,22 @@
-from collections.abc import Iterable, Sized
-
 from src.commands.abstract_command import AbstractCommandMaker, ProcessedData
-
-
-def is_digital_column(column: Iterable | Sized) -> bool:
-    """ Функция для проверки, что колонка содержит только числовые значения. """
-    if len(column) == 0:
-        raise ValueError("Column is empty")
-
-    for value in column:
-        try:
-            float(value)
-        except TypeError:
-            return False
-    return True
+from src.utils import is_digital_column
 
 
 class Aggregator(AbstractCommandMaker):
+    """ Обработчик команды агрегации. """
+
     name: str | None = "aggregation"
 
-    def validate(self) -> tuple[str, str, str]:
+    def parse_command(self) -> tuple[str, str, str]:
         parsed_command = [element for element in self._command.split("=") if len(element)]
-        if len(parsed_command) != 2:
-            raise ValueError(f"Invalid value for aggregation command: {self._command}")
 
+        # Проверим, что после парсинга команда содержит только колонку и параметр
+        if len(parsed_command) != 2:
+            raise ValueError(f"Invalid value for {self.name} command: {self._command}")
         column, param = parsed_command
         return column, "=", param
 
-    def make(self, previous_data: ProcessedData, *, column: str, sign:str, param: str) -> ProcessedData:
+    def process(self, previous_data: ProcessedData, *, column: str, sign:str, param: str) -> ProcessedData:
         values = previous_data[column]
         if not is_digital_column(values):
             raise ValueError(f"Aggregation column must be digital: {column=}")
@@ -42,7 +31,5 @@ class Aggregator(AbstractCommandMaker):
                 average = sum(values) / len(values)
                 return {column: [average]}
             case _:
+                # Случай неподходящего параметра агрегации
                 raise ValueError(f"Invalid aggregation parameter: {param=}")
-
-if __name__ == "__main__":
-    print(is_digital_column(['0', '1', '2']))
