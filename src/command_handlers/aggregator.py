@@ -1,8 +1,8 @@
-from src.commands.abstract_command import AbstractCommandMaker, ProcessedData
+from src.command_handlers.abstract_handler import AbstractCommandHandler, ProcessedData
 from src.utils import is_digital_column
 
 
-class Aggregator(AbstractCommandMaker):
+class Aggregator(AbstractCommandHandler):
     """ Обработчик команды агрегации. """
 
     name: str | None = "aggregation"

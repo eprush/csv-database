@@ -1,8 +1,8 @@
-from src.commands.abstract_command import AbstractCommandMaker, ProcessedData
+from src.command_handlers.abstract_handler import AbstractCommandHandler, ProcessedData
 from src.utils import is_digital_column
 
 
-class Filter(AbstractCommandMaker):
+class Filter(AbstractCommandHandler):
     """ Обработчик команды фильтрации. """
 
     name: str | None = "filtration"
