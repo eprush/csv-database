@@ -19,3 +19,16 @@ def get_headers(reader: Iterable[Sequence[str]]) -> list[str]:
 
 def does_column_exist(column_name: str, *, headers: Iterable[str]) -> bool:
     return column_name in headers
+
+
+def is_digital_column(column: Iterable | Sized) -> bool:
+    """ Функция для проверки, что колонка содержит только числовые значения. """
+    if len(column) == 0:
+        raise ValueError("Column is empty")
+
+    for value in column:
+        try:
+            float(value)
+        except ValueError:
+            return False
+    return True
