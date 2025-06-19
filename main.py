@@ -5,14 +5,15 @@ from src.view import show
 
 
 def main() -> None:
-    parser = get_parser()
+    """ Входная точка проекта. """
 
+    parser = get_parser()
     args = parser.parse_args()
     args = CmdArgs(file=args.file, where=args.where, aggregate=args.aggregate)
 
-    headers, values = process_file(args)
+    data = process_file(args)
 
-    show(headers, values)
+    show(data)
     return
 
 

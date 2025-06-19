@@ -1,12 +1,16 @@
 import argparse
 
 def get_parser():
+    """ Функция для настройки парсинга аргументов командной строки. """
     parser = argparse.ArgumentParser(description="Фильтрация и агрегация данных из CSV файла")
     parser.add_argument("--file", required=True, help="CSV файл для обработки")
     parser.add_argument("--where", help="""
         Фильтрация по колонке.
-        Значение в виде <column>?<value>.
-        В качестве знака сравнения ? могут быть знаки (>, =, <)
+        Могут использоваться операторы >, =, <.
+        Таким образом, значение может быть в одном из представленных видов: 
+        column=value ,
+        column>value ,
+        column<value .
         """
     )
     parser.add_argument("--aggregate", help="""
