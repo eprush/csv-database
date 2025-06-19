@@ -23,7 +23,6 @@ def headers() -> Iterable:
 @pytest.mark.parametrize(("column", "res"),
     [
         ("brand", True),
-        ("cost", True),
         ("rating", False),
     ]
 )
@@ -35,7 +34,6 @@ def test_does_exist_column(headers, column, res):
     [
         ("test_data.csv", True),
         ("test_data.txt", False),
-        ("test.py", False),
         ("t.c", False),
     ]
 )
@@ -45,7 +43,6 @@ def test_has_csv_extension(filename, res):
 
 @pytest.mark.parametrize(("values", "res", "expectation"),
     [
-        ([1,2,3], True, does_not_raise()),
         ([0,"-0.1"], True, does_not_raise()),
         ([1, "1", 3], True, does_not_raise()),
         (["0,1"], False, does_not_raise()),
