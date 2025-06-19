@@ -19,7 +19,7 @@ class Aggregator(AbstractCommandHandler):
     def process(self, previous_data: ProcessedData, *, column: str, sign:str, param: str) -> ProcessedData:
         values = previous_data[column]
         if not is_digital_column(values):
-            raise ValueError(f"Aggregation column must be digital: {column=}")
+            raise TypeError(f"Aggregation column must be digital: {column=}")
 
         values = [float(v) for v in values]
         match param:
