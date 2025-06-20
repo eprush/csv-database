@@ -20,4 +20,3 @@ csv_res = {
 def test_get_data_from_file(filename, res, expectation):
     with expectation:
         assert _get_data_from_file(filename) == res
-
