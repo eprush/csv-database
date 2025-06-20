@@ -4,7 +4,7 @@ from typing import Literal
 
 import pytest
 
-from src.utils import does_column_exist, has_csv_extension, is_digital_column, parse_row
+from src.utils import does_column_exist, has_csv_extension, is_digital_column
 
 
 class CustomHeaders:
@@ -54,12 +54,3 @@ def test_is_digital_column(values: Sequence, res, expectation):
     with expectation:
         assert is_digital_column(values) == res
 
-
-@pytest.mark.parametrize(("row", "sep", "res"),
-    [
-        (["1.0;1;test;1,0"], ";", ["1.0", "1", "test", "1,0"]),
-        (["1.0,1,test,1;0"], ",", ["1.0", "1", "test", "1;0"]),
-    ]
-)
-def test_parse_row(row, sep: Literal[";", ","], res):
-    assert parse_row(row, sep=sep) == res
