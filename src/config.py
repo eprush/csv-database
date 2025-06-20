@@ -1,6 +1,6 @@
 import argparse
 
-def get_parser():
+def get_parser() -> argparse.ArgumentParser:
     """ Функция для настройки парсинга аргументов командной строки. """
     parser = argparse.ArgumentParser(description="Фильтрация и агрегация данных из CSV файла")
     parser.add_argument("--file", required=True, help="CSV файл для обработки")
