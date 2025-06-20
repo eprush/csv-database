@@ -23,9 +23,9 @@ def test_parse_command(command: str, res, expectation):
 
 @pytest.mark.parametrize(("command", "res", "expectation"),
     [
-        ("rating=avg", {"rating": [0.96]}, does_not_raise()),
-        ("rating=min", {"rating": [-0.4]}, does_not_raise()),
-        ("rating=max", {"rating": [2.11]}, does_not_raise()),
+        ("rating=avg", {"avg": [0.96]}, does_not_raise()),
+        ("rating=min", {"min": [-0.4]}, does_not_raise()),
+        ("rating=max", {"max": [2.11]}, does_not_raise()),
         ("rating=supermax", ..., pytest.raises(ValueError)),
         ("brand=avg", ..., pytest.raises(TypeError)),
     ]

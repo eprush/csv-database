@@ -24,12 +24,12 @@ class Aggregator(AbstractCommandHandler):
         values = [float(v) for v in values]
         match param:
             case "min":
-                return {column: [min(values)]}
+                return {param: [min(values)]}
             case "max":
-                return {column: [max(values)]}
+                return {param: [max(values)]}
             case "avg":
                 average = sum(values) / len(values)
-                return {column: [average]}
+                return {param: [average]}
             case _:
                 # Случай неподходящего параметра агрегации
                 raise ValueError(f"Invalid aggregation parameter: {param=}")
