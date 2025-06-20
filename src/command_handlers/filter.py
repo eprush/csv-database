@@ -29,29 +29,18 @@ class Filter(AbstractCommandHandler):
     def process(self, previous_data: ProcessedData, *, column: str, sign: str, param: str) -> ProcessedData:
         values = previous_data[column]
 
-        def raise_if_not_digital():
-            """ Функция, которая возбуждает исключение,
-                если параметр команды имеет числовой тип и
-                колонка содержит значения числового типа. """
-
-            if not is_digital_column(values):
-                raise TypeError(f"Filtration {column=} must be digital because of using {sign=}")
-
-            try:
-                _ = float(param)
-            except ValueError:
-                raise TypeError(f"Filtration {param=} must be digital because of using {sign=}")
+        is_digitable_param = True
+        try:
+            _ = float(param)
+        except ValueError:
+            is_digitable_param = False
 
         match sign:
             case "=":
-                is_digitable_param = True
-                try:
-                    _ = float(param)
-                except ValueError:
-                    is_digitable_param = False
-
                 if is_digitable_param:
-                    raise_if_not_digital()
+                    if not is_digital_column(values):
+                        raise TypeError(f"Filtration {column=} must be digital because of using digital {param=}")
+
                     filtered_indexes = [
                         idx for idx, value in enumerate(values)
                         if float(value) == float(param)
@@ -62,13 +51,21 @@ class Filter(AbstractCommandHandler):
                         if value == param
                     ]
             case ">":
-                raise_if_not_digital()
+                if not is_digital_column(values):
+                    raise TypeError(f"Filtration {column=} must be digital because of using {sign=}")
+                if not is_digitable_param:
+                    raise TypeError(f"Filtration {param=} must be digital because of using {sign=}")
+
                 filtered_indexes = [
                     idx for idx, value in enumerate(values)
                     if float(value) > float(param)
                 ]
             case "<":
-                raise_if_not_digital()
+                if not is_digital_column(values):
+                    raise TypeError(f"Filtration {column=} must be digital because of using {sign=}")
+                if not is_digitable_param:
+                    raise TypeError(f"Filtration {param=} must be digital because of using {sign=}")
+
                 filtered_indexes = [
                     idx for idx, value in enumerate(values)
                     if float(value) < float(param)
