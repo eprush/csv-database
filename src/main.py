@@ -1,6 +1,7 @@
 import csv
+from typing import Literal
 
-from src.utils import has_csv_extension, does_column_exist, get_headers, parse_row
+from src.utils import has_csv_extension, does_column_exist, get_headers
 from src.models import CmdArgs
 from src.command_handlers.abstract_handler import AbstractCommandHandler, ProcessedData
 from src.command_handlers.filter import Filter
@@ -9,7 +10,7 @@ from src.command_handlers.aggregator import Aggregator
 CommandHandlers = tuple[AbstractCommandHandler | None, ...]
 
 
-def _get_data_from_file(filename: str) -> ProcessedData:
+def _get_data_from_file(filename: str, *, sep: Literal[",", ";"] = ",") -> ProcessedData:
     """ Функция для получения данных из CSV файла. """
 
     if has_csv_extension(filename):
@@ -21,15 +22,14 @@ def _get_data_from_file(filename: str) -> ProcessedData:
         raise ValueError(f"Invalid file extension for {filename=}")
 
     with file as f:
-        csvreader = csv.reader(f)
+        csvreader = csv.reader(f, delimiter=sep, skipinitialspace=True)
         headers = get_headers(csvreader)
 
         column_to_indices = {col: idx for idx, col in enumerate(headers)}
         column_to_values = {col: [] for col in headers}
         for value in csvreader:
-            parsed = parse_row(value)
             for col, idx in column_to_indices.items():
-                column_to_values[col].append(parsed[idx])
+                column_to_values[col].append(value[idx])
     return column_to_values
 
 
